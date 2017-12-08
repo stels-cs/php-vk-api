@@ -2,6 +2,10 @@
 
 Штука для запросов к API Вконтакте
 
+```bash
+composer require stels-cs/php-vk-api
+```
+
 ```php
 $executor = new \Vk\Executor();
 $response = $executor->execute( new \Vk\ApiRequest('users.get', ['user_ids' => '6492,2050']) );
