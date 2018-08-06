@@ -11,12 +11,21 @@ class Executor
     protected $language;
     protected $accessToken;
 
-    public function __construct($accessToken = null, $version = '5.69', $language = 'ru', $timeout = 600)
+    public static function api(string $method, array $params = []): ApiResponse {
+        $e = new self();
+        return $e->call($method, $params);
+    }
+
+    public function __construct($accessToken = null, $version = '5.80', $language = 'ru', $timeout = 600)
     {
         $this->version = $version;
         $this->timeout = $timeout;
         $this->language = $language;
         $this->accessToken = $accessToken;
+    }
+
+    public function call(string $method, array $params = []): ApiResponse {
+        return $this->execute( new ApiRequest($method, $params) );
     }
 
     public function execute(ApiRequest $request): ApiResponse
@@ -82,7 +91,6 @@ class Executor
     public function canRetryLaterWithCode($code)
     {
         return in_array($code, [
-            500,
             0,
             1,
             6,
