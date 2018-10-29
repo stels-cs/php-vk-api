@@ -16,6 +16,50 @@ class Executor
         return $e->call($method, $params);
     }
 
+    public static function getAccessToken($appId, $appSecret, $redirectUrl, $code) {
+        $params = [
+            "client_id" => $appId,
+            "client_secret" => $appSecret,
+            "redirect_uri" => $redirectUrl,
+            "code" => $code
+        ];
+        $data = http_build_query($params);
+        $opts = ['http' =>
+            [
+                'method' => 'GET',
+                'timeout' => 60,
+                'ignore_errors' => true
+            ]
+        ];
+        $context = stream_context_create($opts);
+        try {
+            $result = file_get_contents('https://oauth.vk.com/access_token?'.$data, false, $context);
+        } catch (\Exception $e) {
+            $result = '';
+        }
+        $json = json_decode($result, true);
+        $response = new ApiResponse(new ApiRequest("auth", []));
+        $response->setRawResponse($result);
+        if (!$json && !is_array($json)) {
+            $response->setCode(500);
+            return $response;
+        }
+        if (isset($json['access_token'])) {
+            $response->setCode(200);
+            $response->setResponse($json);
+        } elseif (isset($json['error'])) {
+            $code = $json['error'];
+            $message = $json['error_description'] ?? "Unknow error";
+            $response->setCode($code);
+            $response->setMessage($message);
+            $response->setCaptchaSig($json['error']['captcha_sid'] ?? null);
+            $response->setCaptchaImg($json['error']['captcha_img'] ?? null);
+        } else {
+            $response->setCode(500);
+        }
+        return $response;
+    }
+
     public function __construct($accessToken = null, $version = '5.80', $language = 'ru', $timeout = 600)
     {
         $this->version = $version;

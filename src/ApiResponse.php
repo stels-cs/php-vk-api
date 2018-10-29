@@ -38,8 +38,17 @@ class ApiResponse
 
     /**
      * @return mixed
+     * @deprecated
      */
     public function getResponse()
+    {
+        return $this->response;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getData()
     {
         return $this->response;
     }

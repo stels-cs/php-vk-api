@@ -16,4 +16,21 @@ class NegativeTest extends PHPUnit_Framework_TestCase
             }
         }
     }
+
+    public function testAuthError() {
+        $appId = 43251123;
+        $appSecret = "AFwetrvasfawer";
+        $redirectUrl = "https://mysite.com/auth";
+        $code = "caefrvrtsvakmcaoer";
+
+        $response = \Vk\Executor::getAccessToken($appId, $appSecret, $redirectUrl, $code);
+        if ($response->isSuccess()) {
+            throw new \Exception("Wtf? correct response? ".$response->getRawResponse());
+        } else {
+            $code = $response->getCode(); //int
+            $message = $response->getMessage(); //string
+            $this->assertEquals($message, "client_id is blocked");
+            $this->assertEquals($code, "invalid_client");
+        }
+    }
 }
