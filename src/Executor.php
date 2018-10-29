@@ -16,7 +16,7 @@ class Executor
         return $e->call($method, $params);
     }
 
-    public static function getAccessToken($appId, $appSecret, $redirectUrl, $code) {
+    public static function getAccessToken($appId, $appSecret, $redirectUrl, $code): ApiResponse {
         $params = [
             "client_id" => $appId,
             "client_secret" => $appSecret,
