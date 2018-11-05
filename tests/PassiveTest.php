@@ -22,4 +22,20 @@ class PassiveTest extends PHPUnit_Framework_TestCase
             throw new \Exception($response->getRawResponse(), $response->getCode());
         }
     }
+
+//    public function testImageUpload() {
+//        $token = "270b2d972f25cc0a7893.....26eb44957c610ed1402725a5a2ae3";
+//
+//        $uploader = new \Vk\GroupImageUploader($token);
+//
+//        $file = "/Users/i.nedzvetskiy/Downloads/xUvX2Ktzu18.jpg";
+//
+//        $id = $uploader->uploadImage($file);
+//
+//        $this->assertTrue( is_string($id) && mb_strlen($id) >=1 );
+//
+//        $url = $uploader->getImageUrl($id, "50x50");
+//
+//        $this->assertTrue( is_string($url) && mb_strlen($url) >=20 );
+//    }
 }

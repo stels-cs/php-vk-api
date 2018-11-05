@@ -1,4 +1,4 @@
-# VK API Client 1.1.1
+# VK API Client 1.2.0
 
 Клиент для запросов к API Вконтакте
 
@@ -72,4 +72,15 @@ if ($response->isSuccess()) {
     $canRetry = $executor->canRetryLaterWithCode($code); //bool
     // if $canRetry == true it "soft" error like network error or vk is down
 }
+```
+
+
+Загрузка изображения для виджета с использоватеним токена сообщества
+
+```php
+$token = "270b2d972f25cc0a7893.....26eb44957c610ed1402725a5a2ae3";
+$uploader = new \Vk\GroupImageUploader($token);
+$file = "/Users/i.nedzvetskiy/Downloads/xUvX2Ktzu18.jpg";
+$id = $uploader->uploadImage($file); //$id можно использтвать в коде виджета
+$url = $uploader->getImageUrl($id, "50x50"); //Так можно получать url картинки
 ```
