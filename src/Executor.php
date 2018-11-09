@@ -11,12 +11,14 @@ class Executor
     protected $language;
     protected $accessToken;
 
-    public static function api(string $method, array $params = []): ApiResponse {
+    public static function api(string $method, array $params = []): ApiResponse
+    {
         $e = new self();
         return $e->call($method, $params);
     }
 
-    public static function getAccessToken($appId, $appSecret, $redirectUrl, $code): ApiResponse {
+    public static function getAccessToken($appId, $appSecret, $redirectUrl, $code): ApiResponse
+    {
         $params = [
             "client_id" => $appId,
             "client_secret" => $appSecret,
@@ -33,7 +35,7 @@ class Executor
         ];
         $context = stream_context_create($opts);
         try {
-            $result = file_get_contents('https://oauth.vk.com/access_token?'.$data, false, $context);
+            $result = file_get_contents('https://oauth.vk.com/access_token?' . $data, false, $context);
         } catch (\Exception $e) {
             $result = '';
         }
@@ -68,8 +70,9 @@ class Executor
         $this->accessToken = $accessToken;
     }
 
-    public function call(string $method, array $params = []): ApiResponse {
-        return $this->execute( new ApiRequest($method, $params) );
+    public function call(string $method, array $params = []): ApiResponse
+    {
+        return $this->execute(new ApiRequest($method, $params));
     }
 
     public function execute(ApiRequest $request): ApiResponse
@@ -133,6 +136,11 @@ class Executor
     }
 
     public function canRetryLaterWithCode($code)
+    {
+        return self::isSoftErrorCode($code);
+    }
+
+    public static function isSoftErrorCode($code)
     {
         return in_array($code, [
             0,
