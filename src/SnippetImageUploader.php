@@ -25,7 +25,7 @@ class SnippetImageUploader extends ImageUploader
 
     public function getImageSaveMethod()
     {
-        return 'apps.`saveCashSnippetPhoto';
+        return 'apps.saveCashSnippetPhoto';
     }
 
     protected function getAccessToken()
