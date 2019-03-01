@@ -1,4 +1,4 @@
-# VK API Client 1.2.1
+# VK API Client 1.2.2
 
 Клиент для запросов к API Вконтакте
 

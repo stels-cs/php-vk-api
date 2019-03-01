@@ -22,6 +22,7 @@ abstract class ImageUploader
      * @return mixed
      * @throws FileNotFoundException
      * @throws VkException
+     * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function uploadImage($path)
     {
@@ -37,13 +38,22 @@ abstract class ImageUploader
      * @return mixed
      * @throws VkException
      */
-    private function getUploadServer($imageType)
+    protected function getUploadServer($imageType)
     {
-        $response = Executor::api($this->getUploadServerMethod(), [
-                'access_token' => $this->getAccessToken(),
-                'image_type' => $imageType,
-            ]
-        );
+        return $this->getUploadServerRequest([
+            'access_token' => $this->getAccessToken(),
+            'image_type' => $imageType,
+        ]);
+    }
+
+    /**
+     * @param $params
+     * @return mixed
+     * @throws VkException
+     */
+    protected function getUploadServerRequest($params)
+    {
+        $response = Executor::api($this->getUploadServerMethod(), $params);
         if (!$response->isSuccess()) {
             throw new VkException($response->getMessage(), $response->getCode());
         } else {
@@ -55,18 +65,23 @@ abstract class ImageUploader
         return $response['upload_url'];
     }
 
+    protected function getFileNameInPostRequest() {
+        return 'file';
+    }
+
     /**
      * @param $uploadServer
      * @param $path
      * @return mixed
      * @throws VkException
+     * @throws \GuzzleHttp\Exception\GuzzleException
      */
     private function sendImageToVk($uploadServer, $path)
     {
         $client = new Client();
         $multipart = new MultipartStream([
             [
-                'name' => 'file',
+                'name' => $this->getFileNameInPostRequest(),
                 'contents' => fopen($path, 'r')
             ],
         ]);
@@ -81,8 +96,8 @@ abstract class ImageUploader
         if (empty($response['hash'])) {
             throw new VkException('Empty hash on image uploading response');
         }
-        if (empty($response['image'])) {
-            throw new VkException('Empty image on image uploading response');
+        if (empty($response['image']) && empty($response['photo'])) {
+            throw new VkException('Empty image or photo on uploading response');
         }
         return $response;
     }
@@ -92,19 +107,27 @@ abstract class ImageUploader
      * @return mixed
      * @throws VkException
      */
-    private function saveImageAtVk($saveImageParams)
+    protected function saveImageAtVk($saveImageParams)
+    {
+        $response = $this->saveImage($saveImageParams);
+        return $response['id'];
+    }
+
+    /**
+     * @param $saveImageParams
+     * @return mixed
+     * @throws VkException
+     */
+    protected function saveImage($saveImageParams)
     {
         $saveImageParams['access_token'] = $this->getAccessToken();
         $result = Executor::api($this->getImageSaveMethod(), $saveImageParams);
         if (!$result->isSuccess()) {
             throw new VkException($result->getMessage(), $result->getCode());
         } else {
-            $response = $result->getResponse();
+            $response = $result->getData();
+            return $response;
         }
-        if (empty($response['id'])) {
-            throw new VkException('Vk not return image id ' . $this->getImageSaveMethod().' '.json_encode($result->getRawResponse()));
-        }
-        return $response['id'];
     }
 
     /**
@@ -118,7 +141,7 @@ abstract class ImageUploader
         }
     }
 
-    private function getVkImageType($path)
+    protected function getVkImageType($path)
     {
         $imageSize = getimagesize($path);
         $size = $imageSize[0] / 3 . 'x' . $imageSize[1] / 3;
