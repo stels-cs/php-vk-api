@@ -1,10 +1,8 @@
 {
-  "name": "stels-cs/php-vk-api",
-  "description": "Api client for vk.com",
+  "name": "HappySanta/php-stat-collector",
+  "description": "Save logs from php via udp",
   "keywords": [
-    "vk",
-    "vk.com",
-    "api"
+    "logs"
   ],
   "type": "library",
   "license": "MIT",
@@ -16,12 +14,11 @@
   ],
   "require": {
     "php": ">=7.0.0",
-    "ext-json": "*",
-    "guzzlehttp/guzzle": "^6.3"
+    "ext-sockets": "*"
   },
   "autoload": {
     "psr-4": {
-      "Vk\\": "src/"
+      "Hs\\": "src/"
     }
   },
   "require-dev": {
