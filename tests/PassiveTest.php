@@ -5,7 +5,9 @@ class PassiveTest extends PHPUnit_Framework_TestCase
     public function testUsersGet()
     {
         $executor = new \Vk\Executor();
-        $response = $executor->execute( new \Vk\ApiRequest('users.get', ['user_ids' => '6492,2050']) );
+        $response = $executor->execute( new \Vk\ApiRequest('users.get', [
+            'user_ids' => '6492,2050'
+        ]) );
         if ($response->isSuccess()) {
             $list = $response->getResponse();
             if (is_array($list) && count($list) == 2) {
@@ -23,14 +25,14 @@ class PassiveTest extends PHPUnit_Framework_TestCase
         }
     }
 
-    public function testSnippetUpload() {
-        $accessToken = '6128472c6172c3b5eb1c6b5f7d9714632527a';
-        $ownerId = 165679022;
-        $path = 'sn.png';
-
-        $result = \Vk\SnippetImageUploader::upload($accessToken, $ownerId, $path);
-        print_r($result);
-    }
+//    public function testSnippetUpload() {
+//        $accessToken = '6128472c6172c3b5eb1c6b5f7d9714632527a';
+//        $ownerId = 165679022;
+//        $path = 'sn.png';
+//
+//        $result = \Vk\SnippetImageUploader::upload($accessToken, $ownerId, $path);
+//        print_r($result);
+//    }
 
 //    public function testImageUpload() {
 //        $token = "270b2d972f25cc0a7893.....26eb44957c610ed1402725a5a2ae3";

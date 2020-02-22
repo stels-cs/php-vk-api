@@ -90,16 +90,19 @@ class Executor
             ]
         ];
         $context = stream_context_create($opts);
+        $response = new ApiResponse($request);
         try {
             $result = file_get_contents('https://api.vk.com/method/' . $request->getMethod(), false, $context);
         } catch (\Exception $e) {
             $result = '';
+            $response->setCode($e->getCode());
+            $response->setMessage($e->getMessage());
         }
         $json = json_decode($result, true);
-        $response = new ApiResponse($request);
         $response->setRawResponse($result);
         if (!$json && !is_array($json)) {
-            $response->setCode(500);
+            $response->setCode(501);
+            $response->setMessage("Response not exist or not array");
             return $response;
         }
         if (isset($json['response'])) {
@@ -116,7 +119,8 @@ class Executor
             $response->setCaptchaSig($json['error']['captcha_sid'] ?? null);
             $response->setCaptchaImg($json['error']['captcha_img'] ?? null);
         } else {
-            $response->setCode(500);
+            $response->setCode(502);
+            $response->setMessage("Response has invalid format");
         }
         return $response;
     }

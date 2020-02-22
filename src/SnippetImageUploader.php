@@ -6,7 +6,7 @@ namespace Vk;
 
 use Vk\Exceptions\VkException;
 
-class SnippetImageUploader extends ImageUploader
+abstract class SnippetImageUploader extends ImageUploader
 {
 
     protected $token;
@@ -18,15 +18,9 @@ class SnippetImageUploader extends ImageUploader
         $this->ownerId = $ownerId;
     }
 
-    public function getUploadServerMethod()
-    {
-        return 'apps.getCashSnippetPhotoUploadServer';
-    }
+    abstract public function getUploadServerMethod();
 
-    public function getImageSaveMethod()
-    {
-        return 'apps.saveCashSnippetPhoto';
-    }
+    abstract public function getImageSaveMethod();
 
     protected function getAccessToken()
     {
@@ -44,19 +38,19 @@ class SnippetImageUploader extends ImageUploader
         return $this->saveImage($params);
     }
 
-    /**
-     * @param string $accessToken
-     * @param int $ownerId
-     * @param string $path
-     * @return mixed
-     * @throws Exceptions\FileNotFoundException
-     * @throws Exceptions\VkException
-     * @throws \GuzzleHttp\Exception\GuzzleException
-     */
-    public static function upload(string $accessToken, int $ownerId, string $path) {
-        $uploader = new self($accessToken, $ownerId);
-        return $uploader->uploadImage($path);
-    }
+//    /**
+//     * @param string $accessToken
+//     * @param int $ownerId
+//     * @param string $path
+//     * @return mixed
+//     * @throws Exceptions\FileNotFoundException
+//     * @throws Exceptions\VkException
+//     * @throws \GuzzleHttp\Exception\GuzzleException
+//     */
+//    public static function upload(string $accessToken, int $ownerId, string $path) {
+//        $uploader = new self($accessToken, $ownerId);
+//        return $uploader->uploadImage($path);
+//    }
 
     protected function getVkImageType($path) {
         return null;
