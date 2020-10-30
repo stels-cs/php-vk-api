@@ -1,6 +1,8 @@
 <?php
 
-class NegativeTest extends PHPUnit_Framework_TestCase
+use PHPUnit\Framework\TestCase;
+
+class NegativeTest extends TestCase
 {
     public function testMessagesSend()
     {
@@ -10,7 +12,7 @@ class NegativeTest extends PHPUnit_Framework_TestCase
             throw new \Exception("Wtf? correct response? ".$response->getRawResponse());
         } else {
             if ($response->getCode() === 5) {
-                return true;
+                $this->assertTrue(true);
             } else {
                 throw new \Exception($response->getRawResponse());
             }
