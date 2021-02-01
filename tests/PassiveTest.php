@@ -1,6 +1,8 @@
 <?php
 
-class PassiveTest extends PHPUnit_Framework_TestCase
+use PHPUnit\Framework\TestCase;
+
+class PassiveTest extends TestCase
 {
     public function testUsersGet()
     {
@@ -16,7 +18,7 @@ class PassiveTest extends PHPUnit_Framework_TestCase
                         throw new \Exception("Bad user id ".$response->getRawResponse());
                     }
                 }
-                return true;
+                $this->assertTrue(true);
             } else {
                 throw new \Exception("Bad response ".$response->getRawResponse());
             }
